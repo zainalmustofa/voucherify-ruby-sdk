@@ -61,6 +61,16 @@ describe 'Campaigns API' do
     }
   }
 
+  let (:campaign_qualification) {
+    {
+        order: "-created_at",
+        customer:
+        {
+            :source_id => 'source_id'
+        }
+    }
+  }
+
   it 'should create campaign' do
     stub_request(:post, 'https://api.voucherify.io/v1/campaigns')
         .with(body: campaign.to_json, headers: headers)
@@ -115,6 +125,14 @@ describe 'Campaigns API' do
         .to_return(:status => 200, :body => '', :headers => {})
 
     voucherify.campaigns.import_vouchers(test_campaign_name, [])
+  end
+
+  it 'should qualification to user' do
+    stub_request(:post, "https://api.voucherify.io/v1/campaigns/qualification?audienceRulesOnly=false&order=-created_at&limit=50")
+        .with(body: campaign_qualification.to_json, headers: headers)
+        .to_return(:status => 200, :body => '', :headers => {})
+
+    voucherify.campaigns.qualification(campaign_qualification)
   end
 
 end

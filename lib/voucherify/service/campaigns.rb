@@ -34,6 +34,20 @@ module Voucherify
       def import_vouchers(campaign_name, vouchers)
         @client.post("/campaigns/#{ERB::Util.url_encode(campaign_name)}/import", vouchers.to_json)
       end
+
+      def qualification(params = {})
+        audienceRulesOnly = params['audienceRulesOnly'] || params[:audienceRulesOnly]
+        limit = params['limit'] || params[:limit]
+        order = params['order'] || params[:order]
+        params.delete 'audienceRulesOnly'
+        params.delete :audienceRulesOnly
+        params.delete 'limit'
+        params.delete :limit
+        params.delete 'order'
+        params.delete :order
+        url   = "/campaigns/qualification?audienceRulesOnly=#{!!audienceRulesOnly}&order=#{ERB::Util.url_encode(order)}&limit=#{ERB::Util.url_encode(limit)}"
+        @client.post(url, params.to_json)
+      end
     end
   end
 end
